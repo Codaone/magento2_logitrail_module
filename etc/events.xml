@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_payment_pay">
+        <observer name="LogitrailConfirmPaymentObserver" instance="Codaone\LogitrailModule\Observer\ConfirmPaymentObserver" />
+    </event>
+    <event name="controller_action_catalog_product_save_entity_after">
+        <observer name="LogitrailSaveProductObserver" instance="Codaone\LogitrailModule\Observer\SaveProductObserver" />
+    </event>
+    <event name="sales_order_save_commit_after">
+        <observer name="LogtrailConfirmOrderObserver" instance="Codaone\LogitrailModule\Observer\ConfirmOrderObserver"/>
+    </event>
+</config>

@@ -1,0 +1,35 @@
+<?php
+    /** @var \Magento\Directory\Model\Currency $currency */
+    $currency = $block->getCurrencySign();
+?>
+<div id="logitrailFormContainer" style="width:400px;">
+    <img src="<?php //echo $block->getSkinUrl('logitrail/images/loading.gif');?>" style="width: 32px;height: auto;display: block;margin: 0 auto;" id="logitrailLoader" />
+    <div id="logitrailHolder"></div>
+
+    <script type="text/javascript">
+        require([ 'jquery', 'jquery/ui'], function($){
+            var selectionDone = false;
+
+            window.logitrailConfig = {
+                containerId: 'logitrailHolder',
+                <?php echo $block->isTestMode()?'host: "http://checkout.test.logitrail.com",':''; ?>
+                bridgeUrl: '<?php echo $block->getUrl('logitrail/ajax/form'); ?>',
+                success: function(logitrailResponse) {
+                    var price = Number(logitrailResponse.delivery_fee);
+                    span = jQuery('#s_method_logitrail_logitrail').parent().parent().find('span.price')[0];
+                    jQuery(span).html('<span class="price">'+ '<?php echo $currency->getCurrencySymbol(); ?>' + price.toFixed(2) + '</span>');
+                    jQuery.get('<?php echo $block->getUrl('logitrail/ajax/success');?>' + 'order_id/' + logitrailResponse.order_id + '/delivery_fee/' + price, function(){
+                        if(typeof logitrailSelectionDone == 'function') {
+                            logitrailSelectionDone();
+                        }
+                    });
+                    jQuery("#shipping-method-buttons-container").find(".button").prop("disabled", false);
+                    selectionDone = true;
+                },
+                error: function(error) {
+                    alert('<?php echo __('Error occured in Logitrail shipping selection.'); ?>');
+                }
+            };
+        });
+    </script>
+</div>
