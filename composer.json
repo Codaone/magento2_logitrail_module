@@ -3,11 +3,11 @@
     "description": "Logitrail module for magento2",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
-        "magento/module-config": "100.0.*",
-        "magento/module-store": "100.0.*",
-        "magento/module-shipping": "100.0.*",
-        "magento/module-quote": "100.0.*",
-        "magento/framework": "100.0.*"
+        "magento/module-config": "~100.0",
+        "magento/module-store": "~100.0",
+        "magento/module-shipping": "~100.0",
+        "magento/module-quote": "~100.0",
+        "magento/framework": "~100.0"
     },
     "type": "magento2-module",
     "homepage": "https://github.com/Codaone/magento2_logitrail_module",
