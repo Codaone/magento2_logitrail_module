@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 namespace Codaone\LogitrailModule\Setup;
 
 use Magento\Catalog\Model\Product;
@@ -14,8 +18,7 @@ class UpgradeData implements UpgradeDataInterface
     protected $eavSetupFactory;
     public function __construct(
         EavSetupFactory $eavSetupFactory
-    )
-    {
+    ) {
         $this->eavSetupFactory = $eavSetupFactory;
     }
 
@@ -118,13 +121,13 @@ class UpgradeData implements UpgradeDataInterface
                     )
                 ));
 
-            foreach($attributes as $attribute) {
+            foreach ($attributes as $attribute) {
                 $eavSetup->addAttribute('catalog_product', $attribute['attributeCode'], $attribute['data']);
 
-                foreach($attribute['attributeSetIds'] as $attributeSetId) {
+                foreach ($attribute['attributeSetIds'] as $attributeSetId) {
                     $eavSetup->addAttributeToGroup('catalog_product', $attributeSetId, $attribute['attributeGroup'], $attribute['attributeCode']);
                 }
-           }
+            }
         }
         $setup->endSetup();
     }

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @category   Codaone
+ * @package    Codaone_Magento2-logtrail-module
+ * @author     rolf@codaone.fi
+ * @website    https://github.com/Codaone/magento2_logitrail_module
+ * @license    MIT
+ */
+-->
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="buttons" xsi:type="array">

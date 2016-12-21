@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 namespace Codaone\LogitrailModule\Observer;
 
 use Magento\Usps\Model\Source\Machinable;
@@ -12,8 +15,7 @@ class ConfirmOrderObserver implements \Magento\Framework\Event\ObserverInterface
     public function __construct(
         \Magento\Quote\Model\QuoteRepository $quoteRepository,
         \Codaone\LogitrailModule\Model\Logitrail $logitrail
-    )
-    {
+    ) {
         $this->quoteRepository = $quoteRepository;
         $this->logitrail = $logitrail;
     }

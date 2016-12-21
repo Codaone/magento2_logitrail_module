@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
  */
 namespace Codaone\LogitrailModule\Block;
 
@@ -32,18 +32,20 @@ class Logitrail extends \Magento\Framework\View\Element\Template
         parent::__construct($context, $data);
     }
 
-    public function getForm() {
+    public function getForm()
+    {
         return $this->logitrailCarrier->getForm();
     }
-    public function isTestMode() {
+    public function isTestMode()
+    {
         return $this->logitrailCarrier->isTestMode();
     }
 
-    public function getCurrencySign() {
+    public function getCurrencySign()
+    {
         $currencyCode = $this->_storeManager->getStore()->getCurrentCurrencyCode();
         /** @var \Magento\Directory\Model\Currency $currency **/
         $currency = $this->_currencyFactory->create()->load($currencyCode);
         return $currency;
     }
 }
-

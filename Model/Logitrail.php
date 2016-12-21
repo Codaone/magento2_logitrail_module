@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 namespace Codaone\LogitrailModule\Model;
 
 class Logitrail extends \Magento\Framework\Model\AbstractModel
@@ -18,19 +21,19 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
     protected $scopeConfig;
     protected $stockItem;
 
-    public function __construct(\Magento\Framework\Model\Context $context,
-                                \Magento\Framework\Registry $registry,
-                                \Magento\Framework\DB\TransactionFactory $transactionFactory,
-                                \Magento\Store\Model\StoreManagerInterface $storeManager,
-                                \Magento\Tax\Model\Calculation $taxCalculation,
-                                \Magento\Catalog\Model\ProductRepository $productRepository,
-                                \Magento\Sales\Model\Convert\OrderFactory $convertOrderFactory,
-                                \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
-                                \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
-                                \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-                                \Magento\CatalogInventory\Api\StockStateInterface $stockItem
-    )
-    {
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\DB\TransactionFactory $transactionFactory,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Tax\Model\Calculation $taxCalculation,
+        \Magento\Catalog\Model\ProductRepository $productRepository,
+        \Magento\Sales\Model\Convert\OrderFactory $convertOrderFactory,
+        \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
+        \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\CatalogInventory\Api\StockStateInterface $stockItem
+    ) {
         $this->logger = $context->getLogger();
         $this->transactionFactory = $transactionFactory;
         $this->storeManager = $storeManager;
@@ -51,14 +54,16 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
         parent::__construct($context, $registry);
     }
 
-    public function getApi() {
+    public function getApi()
+    {
         return $this->api;
     }
 
-    public function updateOrder($order) {
+    public function updateOrder($order)
+    {
         /** @var \Magento\Sales\Model\Order $order */
         $api = $this->getApi();
-        $api->setResponseAsRaw(TRUE);
+        $api->setResponseAsRaw(true);
         $logitrailId = $order->getLogitrailOrderId();
         $api->setOrderId($order->getId());
         $address = $order->getShippingAddress();
@@ -79,11 +84,12 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
     * Confirm order delivery to Logitrail
     *
     */
-    public function confirmOrder($order) {
+    public function confirmOrder($order)
+    {
         /** @var $order \Magento\Sales\Model\Order */
-        if($order->getShippingMethod() == 'logitrail_logitrail') {
+        if ($order->getShippingMethod() == 'logitrail_logitrail') {
             $api = $this->getApi();
-            $api->setResponseAsRaw(TRUE);
+            $api->setResponseAsRaw(true);
             $logitrailId = $order->getLogitrailOrderId();
             $address = $order->getShippingAddress();
             $email = $address->getEmail() ? : $order->getCustomerEmail();
@@ -102,7 +108,7 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
             $api->setOrderId($order->getId());
             $api->updateOrder($logitrailId);
             $rawResponse = $api->confirmOrder($logitrailId);
-            $response    = json_decode($rawResponse, TRUE);
+            $response    = json_decode($rawResponse, true);
             if ($response) {
                 if ($this->_getConfig('autoship') and $order->canShip()) {
                     $qty = array();
@@ -126,7 +132,7 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                             'number'       => $response['tracking_code']
                         ));
                     $shipment->addTrack($track);
-                    $shipment->getOrder()->setIsInProcess(TRUE);
+                    $shipment->getOrder()->setIsInProcess(true);
 
                     $transactionSave = $this->transactionFactory->create();
                     $transactionSave->addObject($shipment)
@@ -139,8 +145,7 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                 ) {
                     $this->logger->info("Confirmed order $logitrailId, response $rawResponse");
                 }
-            }
-            else {  // confirmation failed
+            } else {  // confirmation failed
                 $order->addStatusHistoryComment(__('Error: could not confirm order to Logitrail. Logitrail Order Id: ' . $logitrailId));
                 $this->logger->error("Could not confirm order to Logitrail. Logitrail Order Id:  $logitrailId Response: $rawResponse");
                 if ($this->isTestMode()) {
@@ -156,7 +161,8 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
     * @return mixed: true on success, string error message on failure.
     *
     */
-    public function addProducts($productIds) {
+    public function addProducts($productIds)
+    {
         $api = $this->getApi();
         $api->setResponseAsRaw(true);
         $store = $this->storeManager->getStore();
@@ -166,12 +172,13 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
         $api->clearAll();
 
 
-        foreach($productIds as $productId) {
+        foreach ($productIds as $productId) {
             $product = $this->productRepository->getById($productId);
             $taxClassId = $product->getTaxClassId();
             $taxPercent = $this->taxCalculation->getRate($request->setProductClassId($taxClassId));
 
-            $api->addProduct($product->getId(),
+            $api->addProduct(
+                $product->getId(),
                 $product->getName(),
                 $this->stockItem->getStockQty($product->getId(), $product->getStore()->getWebsiteId()),
                 $product->getWeight() * 1000, // in grams
@@ -199,7 +206,7 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                 }
                 return $errorMessage;  // can not recover
             }
-            if(isset($status['code']) && $status['code'] == 'access_denied') {
+            if (isset($status['code']) && $status['code'] == 'access_denied') {
                 // Access denied means its pointless to check the rest of the products, log the error and return with a sensible error message
                 $errorMessage = __('Invalid credentials for Logitrail API. Reason: ') . $status['code'] . ", " . $status['message'];
                 $this->logger->error("Error: could not create/update product(s) to Logitrail. Response: " . join(',', $results));
@@ -210,7 +217,7 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                 $failed[] = $status['id'];
             }
         }
-        if(!$success) {
+        if (!$success) {
             $errorMessage = __('Failed creating/updating product IDs: ') . join(', ', $failed);
             $this->logger->error("Error: could not create/update product Logitrail. Response: " . join(",", $results));
             if ($this->isTestMode()) {
@@ -219,16 +226,18 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
             return $errorMessage;
         }
         if ($this->isTestMode()) {
-            $this->logger->info("Created/updated products to Logitrail. Product IDs: " . join(',',$productIds) . " Logitrail response " .   print_r($results, true));
+            $this->logger->info("Created/updated products to Logitrail. Product IDs: " . join(',', $productIds) . " Logitrail response " .   print_r($results, true));
         }
         return true;
     }
 
-    protected function _getConfig($name) {
+    protected function _getConfig($name)
+    {
         return $this->scopeConfig->getValue('carriers/logitrail/' . $name, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
-    protected function isTestMode() {
+    protected function isTestMode()
+    {
         return $this->scopeConfig->getValue('carriers/logitrail/testmode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

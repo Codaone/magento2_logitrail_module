@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 namespace Codaone\LogitrailModule\Model\Carrier;
 
 use Magento\Quote\Model\Quote\Address\RateRequest;
@@ -53,7 +57,8 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return string
      */
-    public function getFormBlock() {
+    public function getFormBlock()
+    {
         return 'logitrail/logitrail';
     }
 
@@ -62,14 +67,15 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return string
      */
-    public function getForm() {
+    public function getForm()
+    {
         $this->session->setLogitrailShippingCost(0);
 
         $items = $this->quote->getAllVisibleItems();
         $api = $this->logitrail->getApi();
         //$api->setOrderId($this->quote->getId());
         $api->setOrderId($this->quote->getId());
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $product = $this->productRepository->getById($item->getProduct()->getId());
             $api->addProduct(
                 $product->getId(),
@@ -87,9 +93,9 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
         $address = $this->quote->getShippingAddress();
         $email = $address->getEmail();
 
-        if($address->getFirstname() == null && $address->getLastname() == null) {
+        if ($address->getFirstname() == null && $address->getLastname() == null) {
             $customer = $this->quote->getCustomer();
-            if($this->quote->getCustomer()->getId() == null) {
+            if ($this->quote->getCustomer()->getId() == null) {
                 return false;
             }
             $addressId = $this->quote->getCustomer()->getDefaultShipping();
@@ -97,13 +103,15 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
             $email = $this->quote->getCustomerEmail();
         }
         // firstname, lastname, phone, email, address, postalCode, city
-        $api->setCustomerInfo($address->getFirstname(),
+        $api->setCustomerInfo(
+            $address->getFirstname(),
             $address->getLastname(),
             $address->getTelephone(),
             $email,
             join(' ', $address->getStreet()),
             $address->getPostcode(),
-            $address->getCity());
+            $address->getCity()
+        );
         $form = $api->getForm();
         if ($this->isTestMode()) {
             $this->logger->info("Order form for Logitrail: $form");
@@ -116,7 +124,8 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return string
      */
-    public function shippingDetails($logitrailId, $price) {
+    public function shippingDetails($logitrailId, $price)
+    {
         $this->session->setLogitrailShippingCost($price);
         if ($this->isTestMode()) {
             $this->logger->info("Shipping details: Logitrail Order Id: $logitrailId, Shipping fee: $price");
@@ -153,7 +162,8 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return boolean
      */
-    public function isTestMode() {
+    public function isTestMode()
+    {
         return $this->getConfigData('testmode') == 1;
     }
 
@@ -169,7 +179,7 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
 
         // Save the address to the quote as we need it when retrieving the form
         $quoteItems = $request->getAllItems();
-        if(count($quoteItems)>0) {
+        if (count($quoteItems)>0) {
             /** @var \Magento\Quote\Model\Quote $quote */
             $quote = $quoteItems[0]->getQuote();
 

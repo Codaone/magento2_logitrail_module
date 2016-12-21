@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * @category   Codaone
+ * @package    Codaone_Magento2-logtrail-module
+ * @author     rolf@codaone.fi
+ * @website    https://github.com/Codaone/magento2_logitrail_module
+ * @license    MIT
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="sales_order_payment_pay">
         <observer name="LogitrailConfirmPaymentObserver" instance="Codaone\LogitrailModule\Observer\ConfirmPaymentObserver" />

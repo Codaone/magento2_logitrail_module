@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 namespace Codaone\LogitrailModule\Controller\Adminhtml\LogiActions;
 
 class MassCreate extends \Magento\Backend\App\Action
@@ -10,13 +13,13 @@ class MassCreate extends \Magento\Backend\App\Action
     protected $filter;
     protected $collectionFactory;
 
-    public function __construct( \Codaone\LogitrailModule\Model\Logitrail $logitrail,
-                                 \Magento\Backend\App\Action\Context $context,
-                                 \Magento\Catalog\Controller\Adminhtml\Product\Builder $productBuilder,
-                                 \Magento\Ui\Component\MassAction\Filter $filter,
-                                 \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory
-    )
-    {
+    public function __construct(
+        \Codaone\LogitrailModule\Model\Logitrail $logitrail,
+        \Magento\Backend\App\Action\Context $context,
+        \Magento\Catalog\Controller\Adminhtml\Product\Builder $productBuilder,
+        \Magento\Ui\Component\MassAction\Filter $filter,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory
+    ) {
         parent::__construct($context);
         $this->logitrail = $logitrail;
         $this->messageManager = $context->getMessageManager();
@@ -27,8 +30,6 @@ class MassCreate extends \Magento\Backend\App\Action
 
     /*
      *  Return logitrail form for checkout
-     *
-     *
      */
     public function execute()
     {
@@ -47,4 +48,3 @@ class MassCreate extends \Magento\Backend\App\Action
         return $resultRedirect->setPath($this->getUrl("catalog/product/index"));
     }
 }
-

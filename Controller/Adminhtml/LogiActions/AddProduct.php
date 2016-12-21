@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © 2016 Codaone Oy. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
 namespace Codaone\LogitrailModule\Controller\Adminhtml\LogiActions;
 
 class AddProduct extends \Magento\Backend\App\Action
@@ -7,9 +10,10 @@ class AddProduct extends \Magento\Backend\App\Action
     protected $logitrail;
     protected $messageManager;
 
-    public function __construct( \Codaone\LogitrailModule\Model\Logitrail $logitrail,
-                                 \Magento\Backend\App\Action\Context $context)
-    {
+    public function __construct(
+        \Codaone\LogitrailModule\Model\Logitrail $logitrail,
+        \Magento\Backend\App\Action\Context $context
+    ) {
         parent::__construct($context);
         $this->logitrail = $logitrail;
         $this->messageManager = $context->getMessageManager();
@@ -17,8 +21,6 @@ class AddProduct extends \Magento\Backend\App\Action
 
     /*
      *  Return logitrail form for checkout
-     *
-     *
      */
     public function execute()
     {
