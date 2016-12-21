@@ -1,5 +1,5 @@
 {
-    "name": "codaone/logitrail-shipping-provider",
+    "name": "codaone/magento2-logitrail-module",
     "description": "Logitrail module for magento2",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
@@ -10,8 +10,8 @@
         "magento/framework": "100.0.*"
     },
     "type": "magento2-module",
-    "version": "0.1.0",
-    "license": [],
+    "homepage": "https://github.com/Codaone/magento2_logitrail_module",
+    "license": "MIT",
     "autoload": {
         "files": [ "registration.php" ],
         "psr-4": {
