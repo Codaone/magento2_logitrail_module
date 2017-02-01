@@ -49,8 +49,8 @@
                     <label>Automatic shipment creation</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="autosaveproduct" type="select" sortOrder="95" showInDefault="0" showInWebsite="0" showInStore="0" translate="label comment">
-                    <label>Automatic shipment creation</label>
+                <field id="autosaveproduct" type="select" sortOrder="96" showInDefault="1" showInWebsite="1" showInStore="1" translate="label comment">
+                    <label>Automatic product saving</label>
                     <comment>When product is saved, update Logitrail automatically.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
