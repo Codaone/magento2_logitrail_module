@@ -10,8 +10,13 @@ namespace Codaone\LogitrailModule\Block;
  */
 class Logitrail extends \Magento\Framework\View\Element\Template
 {
+    /** @var \Codaone\LogitrailModule\Model\Carrier\LogitrailCarrier  */
     protected $logitrailCarrier;
+
+    /** @var \Magento\Store\Model\StoreManagerInterface  */
     protected $_storeManager;
+
+    /** @var \Magento\Directory\Model\CurrencyFactory  */
     protected $_currencyFactory;
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
@@ -36,6 +41,7 @@ class Logitrail extends \Magento\Framework\View\Element\Template
     {
         return $this->logitrailCarrier->getForm();
     }
+
     public function isTestMode()
     {
         return $this->logitrailCarrier->isTestMode();

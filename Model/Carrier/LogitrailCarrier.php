@@ -67,7 +67,7 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return string
      */
-    public function getForm()
+    public function getForm($lang = 'fi')
     {
         $this->session->setLogitrailShippingCost(0);
 
@@ -110,9 +110,10 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
             $email,
             join(' ', $address->getStreet()),
             $address->getPostcode(),
-            $address->getCity()
+            $address->getCity(),
+            $address->getCompany()
         );
-        $form = $api->getForm();
+        $form = $api->getForm($lang);
         if ($this->isTestMode()) {
             $this->logger->info("Order form for Logitrail: $form");
         }

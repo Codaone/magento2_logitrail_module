@@ -75,7 +75,8 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
             $email,
             join(' ', $address->getStreet()),
             $address->getPostcode(),
-            $address->getCity()
+            $address->getCity(),
+            $address->getCompany()
         );
         $api->updateOrder($logitrailId);
     }
@@ -102,7 +103,8 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                 $email,
                 join(' ', $address->getStreet()),
                 $address->getPostcode(),
-                $address->getCity()
+                $address->getCity(),
+                $address->getCompany()
             );
 
             $api->setOrderId($order->getId());

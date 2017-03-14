@@ -8,13 +8,16 @@ namespace Codaone\LogitrailModule\Controller\Ajax;
 class Form extends \Magento\Framework\App\Action\Action
 {
     protected $logitrail;
+    protected $_resolver;
 
     public function __construct(
         \Codaone\LogitrailModule\Model\Carrier\LogitrailCarrier $logitrail,
-        \Magento\Framework\App\Action\Context $context
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\Locale\Resolver $resolver
     ) {
         parent::__construct($context);
         $this->logitrail = $logitrail;
+        $this->_resolver = $resolver;
     }
 
     /*
@@ -22,6 +25,8 @@ class Form extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        echo $this->logitrail->getForm();
+        $locale = explode("_", $this->_resolver->getLocale())[0];
+
+        echo $this->logitrail->getForm($locale);
     }
 }
