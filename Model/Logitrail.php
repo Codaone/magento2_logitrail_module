@@ -241,7 +241,4 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
     {
         return $this->scopeConfig->getValue('carriers/logitrail/testmode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
-
-
-
 }
