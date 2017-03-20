@@ -11,15 +11,6 @@ define(
         return {
             getRules: function () {
                 return {
-                    'postcode': {
-                        'required': true
-                    },
-                    'country_id': {
-                        'required': true
-                    },
-                    'city': {
-                        'required': true
-                    },
                     'firstname': {
                         'required': true
                     },
@@ -27,6 +18,15 @@ define(
                         'required': true
                     },
                     'street': {
+                        'required': true
+                    },
+                    'postcode': {
+                        'required': true
+                    },
+                    'city': {
+                        'required': true
+                    },
+                    'country_id': {
                         'required': true
                     }
                 };
