@@ -45,7 +45,6 @@ class Update extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
         \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
         \Magento\Framework\DB\TransactionFactory $transactionFactory
-
     ) {
         parent::__construct($context);
         $this->logitrail = $logitrail;
@@ -72,6 +71,7 @@ class Update extends \Magento\Framework\App\Action\Action
 
         /** @var bool $result */
         $result = false;
+        $msg = "";
 
         if ($this->authenticate($header)) {
             $content = $request->getContent();
@@ -83,19 +83,22 @@ class Update extends \Magento\Framework\App\Action\Action
             switch ($data["event_type"]) {
                 case "product.inventory.change":
                     $result = $this->handleInventoryChange($data);
+                    $msg = "success";
                     break;
                 case "order.shipped":
                     $result = $this->handleOrderShipped($data);
+                    $msg = "success";
                     break;
                 default:
                     $result = true;
+                    $msg = "Handling for event type {$data["event_type"]} not implemented";
                     break;
             }
         }
 
-        if($result) {
+        if ($result) {
             header('HTTP/1.1 200 OK');
-            echo('success');
+            echo($msg);
         } else {
             header('HTTP/1.0 400 Bad Request');
             echo('fail');
