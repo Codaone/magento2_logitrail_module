@@ -186,12 +186,12 @@ class Update extends \Magento\Framework\App\Action\Action
         $webhooksname = $this->scopeConfig->getValue('carriers/logitrail/webhooksname', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         $webhookskey = $this->scopeConfig->getValue('carriers/logitrail/webhookskey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-        // If the first value doesn't match return false
+        // If the first unnamed logitrail webhook httpauth value doesn't match return false
         if ($auth[0] != $webhooksname) {
             return false;
         }
 
-        // If the second value doesn't match return false
+        // If the second unnamed logitrail webhook httpauth value doesn't match return false
         if ($auth[1] != $webhookskey) {
             return false;
         }

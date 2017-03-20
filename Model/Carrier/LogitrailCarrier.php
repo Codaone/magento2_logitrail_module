@@ -78,6 +78,7 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
 
         /** @var \Magento\Quote\Model\Quote\Item $item */
         foreach ($items as $item) {
+            // Skip if product is a bundle or grouped product
             if (count($item->getChildren()) > 0) {
                 continue;
             }
