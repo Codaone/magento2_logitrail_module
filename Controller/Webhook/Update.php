@@ -112,6 +112,7 @@ class Update extends \Magento\Framework\App\Action\Action
             $stock = $this->stockRegistry->getStockItem($product["merchant_id"]);
             $stock->setQty($product["inventory"]["available"]);
         }
+        return true;
     }
 
     private function handleOrderShipped($data)
