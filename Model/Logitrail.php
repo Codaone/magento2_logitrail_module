@@ -115,7 +115,6 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                 if ($this->_getConfig('autoship') and $order->canShip()) {
                     $qty = array();
                     foreach ($order->getAllItems() as $item) {
-                        $Itemqty             = $item->getQtyOrdered();
                         $qty[$item->getId()] = $item->getQtyOrdered();
                     }
 

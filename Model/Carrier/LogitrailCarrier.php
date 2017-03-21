@@ -71,11 +71,17 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
     {
         $this->session->setLogitrailShippingCost(0);
 
-        $items = $this->quote->getAllVisibleItems();
+        $items = $this->quote->getAllItems();
         $api = $this->logitrail->getApi();
         //$api->setOrderId($this->quote->getId());
         $api->setOrderId($this->quote->getId());
+
+        /** @var \Magento\Quote\Model\Quote\Item $item */
         foreach ($items as $item) {
+            // Skip if product is a bundle or grouped product
+            if (count($item->getChildren()) > 0) {
+                continue;
+            }
             $product = $this->productRepository->getById($item->getProduct()->getId());
             $api->addProduct(
                 $product->getId(),

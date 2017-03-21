@@ -31,6 +31,15 @@
                     <label>Secret Key</label>
                     <comment>Merchant Secret Key from Logitrail</comment>
                 </field>
+                <field id="webhooksname" type="text" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="1" translate="label comment">
+                    <label>Webhook name</label>
+                    <comment>Value for the 1st field in Logitrail webhook HTTP Auth settings</comment>
+                </field>
+                <field id="webhookskey" type="text" sortOrder="33" showInDefault="1" showInWebsite="1" showInStore="1" translate="label comment">
+                    <label>Webhook key</label>
+                    <comment>Value for the 2nd field in Logitrail webhook HTTP Auth settings</comment>
+                    <frontend_model>Codaone\LogitrailModule\Block\System\Config\Form\Field\Disable</frontend_model>
+                </field>
                 <field id="sallowspecific" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Ship to Applicable Countries</label>
                     <frontend_class>shipping-applicable-country</frontend_class>
