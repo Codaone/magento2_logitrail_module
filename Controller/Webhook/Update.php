@@ -34,6 +34,9 @@ class Update extends \Magento\Framework\App\Action\Action
     /** @var \Magento\Framework\DB\TransactionFactory  */
     protected $transactionFactory;
 
+    /** @var \Magento\Catalog\Api\ProductRepositoryInterface  */
+    protected $productRepository;
+
     public function __construct(
         \Codaone\LogitrailModule\Model\Logitrail $logitrail,
         \Magento\Backend\App\Action\Context $context,
@@ -44,7 +47,8 @@ class Update extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Model\Convert\OrderFactory $convertOrderFactory,
         \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
         \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
-        \Magento\Framework\DB\TransactionFactory $transactionFactory
+        \Magento\Framework\DB\TransactionFactory $transactionFactory,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     ) {
         parent::__construct($context);
         $this->logitrail = $logitrail;
@@ -56,6 +60,7 @@ class Update extends \Magento\Framework\App\Action\Action
         $this->trackFactory = $trackFactory;
         $this->shipmentNotifier = $shipmentNotifier;
         $this->transactionFactory = $transactionFactory;
+        $this->productRepository = $productRepository;
     }
 
     /*
@@ -108,10 +113,13 @@ class Update extends \Magento\Framework\App\Action\Action
 
     private function handleInventoryChange($data)
     {
-        foreach ($data["payload"] as $product) {
-            $stock = $this->stockRegistry->getStockItem($product["merchant_id"]);
-            $stock->setQty($product["inventory"]["available"]);
-        }
+        $productData = $data["payload"];
+        $product = $this->productRepository->getById($productData["product"]["merchant_id"]);
+        $stock = $this->stockRegistry->getStockItem($product->getId());
+        $stock->setQty($product["inventory"]["available"]);
+        $stock->setIsInStock((int)($product["inventory"]["available"] > 0));
+        $this->stockRegistry->updateStockItemBySku($product->getSku(), $stock);
+
         return true;
     }
 
