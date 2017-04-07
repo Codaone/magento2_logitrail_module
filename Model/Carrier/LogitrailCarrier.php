@@ -117,7 +117,8 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
             join(' ', $address->getStreet()),
             $address->getPostcode(),
             $address->getCity(),
-            $address->getCompany()
+            $address->getCompany(),
+            $address->getCountryId()
         );
         $form = $api->getForm($lang);
         if ($this->isTestMode()) {
