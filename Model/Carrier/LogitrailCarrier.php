@@ -73,7 +73,6 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
 
         $items = $this->quote->getAllItems();
         $api = $this->logitrail->getApi();
-        //$api->setOrderId($this->quote->getId());
         $api->setOrderId($this->quote->getId());
 
         /** @var \Magento\Quote\Model\Quote\Item $item */
@@ -120,7 +119,7 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
             $address->getCompany(),
             $address->getCountryId()
         );
-        $form = $api->getForm($lang);
+        $form = $api->getForm($lang, array('total_sum' => $this->quote->getBaseGrandTotal()));
         if ($this->isTestMode()) {
             $this->logger->info("Order form for Logitrail: $form");
         }

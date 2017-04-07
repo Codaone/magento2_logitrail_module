@@ -171,6 +171,11 @@ class ApiClient
         $post['customer_email'] = $this->email;
         $post['customer_phone'] = $this->phone;
         $post['language'] = $lang;
+
+        foreach ($fields as $field => $value) {
+            $post[$field] = $value;
+        }
+
         // add products to post data
         foreach ($this->products as $id => $product) {
             $post['products_'.$id.'_id'] = $product['id'];
