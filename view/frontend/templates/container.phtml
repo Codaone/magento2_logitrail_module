@@ -37,6 +37,14 @@
                     alert('<?php echo __('Error occured in Logitrail shipping selection.'); ?>');
                 }
             };
+
+            <?php
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $customerSession = $objectManager->create('Magento\Customer\Model\Session');
+                if($customerSession->isLoggedIn()){
+                    echo "Logitrail.checkout(window.logitrailConfig);";
+                }
+            ?>
         });
     </script>
 </div>
