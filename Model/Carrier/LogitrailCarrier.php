@@ -131,15 +131,21 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return string
      */
-    public function shippingDetails($logitrailId, $price)
+    public function shippingDetails($logitrailId, $type, $price)
     {
         $this->session->setLogitrailShippingCost($price);
+        $this->session->setLogitrailShippingType($type);
+
         if ($this->isTestMode()) {
             $this->logger->info("Shipping details: Logitrail Order Id: $logitrailId, Shipping fee: $price");
         }
         $address = $this->quote->getShippingAddress();
         $address->setShippingAmount($price);
         $address->setBaseShippingAmount($price);
+        $translatedType = __($type);
+
+        $address->setShippingDescription("{$this->getConfigData('name')} - {$translatedType}");
+
         $address->save();
         // Find if our shipping has been included.
         $rates = $address->collectShippingRates()
@@ -206,11 +212,17 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
         $method = $this->rateMethodFactory->create();
 
         $method->setData('carrier', $this->_code);
-        $method->setData('carrier_title',  $this->getConfigData('name'));
-        $method->setData('method_title',  $this->getConfigData('title'));
-        $method->setData('method', 'logitrail'); //FIXME: method variable?
+        $method->setData('method', $this->_code);
+
+        $method->setData('carrier_title', $this->getConfigData('name'));
+        $method->setData('method_title', $this->getConfigData('title'));
+        $type = $this->session->getLogitrailShippingType();
+        if (isset($type) && $type) {
+            $method->setData('method_title', __($type));
+        }
 
         $amount = $this->session->getLogitrailShippingCost();
+
         $method->setPrice($amount);
         $method->setData('cost', $amount);
 
