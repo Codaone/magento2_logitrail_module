@@ -154,7 +154,7 @@ class ApiClient
      *
      * @return string
      */
-    public function getForm($lang = 'fi')
+    public function getForm($lang = 'fi', $fields = array())
     {
         // TODO: Check that all mandatory values are set
         $post = array();
