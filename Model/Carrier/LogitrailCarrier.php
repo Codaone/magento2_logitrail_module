@@ -206,8 +206,8 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
         $method = $this->rateMethodFactory->create();
 
         $method->setData('carrier', $this->_code);
-        $method->setData('carrier_title', "Logitrail");
-        $method->setData('method_title', "Logitrail");
+        $method->setData('carrier_title',  $this->getConfigData('name'));
+        $method->setData('method_title',  $this->getConfigData('title'));
         $method->setData('method', 'logitrail'); //FIXME: method variable?
 
         $amount = $this->session->getLogitrailShippingCost();
