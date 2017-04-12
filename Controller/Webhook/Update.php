@@ -34,6 +34,9 @@ class Update extends \Magento\Framework\App\Action\Action
     /** @var \Magento\Framework\DB\TransactionFactory  */
     protected $transactionFactory;
 
+    /** @var \Magento\Catalog\Api\ProductRepositoryInterface  */
+    protected $productRepository;
+
     public function __construct(
         \Codaone\LogitrailModule\Model\Logitrail $logitrail,
         \Magento\Backend\App\Action\Context $context,
@@ -44,7 +47,8 @@ class Update extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Model\Convert\OrderFactory $convertOrderFactory,
         \Magento\Sales\Model\Order\Shipment\TrackFactory $trackFactory,
         \Magento\Shipping\Model\ShipmentNotifier $shipmentNotifier,
-        \Magento\Framework\DB\TransactionFactory $transactionFactory
+        \Magento\Framework\DB\TransactionFactory $transactionFactory,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     ) {
         parent::__construct($context);
         $this->logitrail = $logitrail;
@@ -56,6 +60,7 @@ class Update extends \Magento\Framework\App\Action\Action
         $this->trackFactory = $trackFactory;
         $this->shipmentNotifier = $shipmentNotifier;
         $this->transactionFactory = $transactionFactory;
+        $this->productRepository = $productRepository;
     }
 
     /*
@@ -108,41 +113,57 @@ class Update extends \Magento\Framework\App\Action\Action
 
     private function handleInventoryChange($data)
     {
-        foreach ($data["payload"] as $product) {
-            $stock = $this->stockRegistry->getStockItem($product["merchant_id"]);
-            $stock->setQty($product["inventory"]["available"]);
+        $productData = $data["payload"];
+        $product = $this->productRepository->getById($productData["product"]["merchant_id"]);
+        $stock = $this->stockRegistry->getStockItem($product->getId());
+        $stock->setQty($product["inventory"]["available"]);
+        if (!$stock->getBackorders()) {
+            $stock->setIsInStock((int)($product["inventory"]["available"] > 0));
         }
+        $this->stockRegistry->updateStockItemBySku($product->getSku(), $stock);
+
         return true;
     }
 
     private function handleOrderShipped($data)
     {
+        $orderData = $data["payload"];
         /** @var bool $result */
         $result = false;
 
         /** @var \Magento\Sales\Model\Order $order */
-        $order = $this->orderRepository->get($data["merchant_id"]);
+        $order = $this->orderRepository->get($orderData["order"]["merchants_order"]["id"]);
 
         //A shipment might have been created if autoship was set to true in module settings
         if (!$order->hasShipments() && $order->canShip()) {
-            $qty = array();
-            foreach ($order->getAllItems() as $item) {
-                $qty[$item->getId()] = $item->getQtyOrdered();
-            }
-
             /** @var \Magento\Sales\Model\Convert\Order $convertOrder */
             $convertOrder = $this->convertOrderFactory->create();
 
             /** @var \Magento\Sales\Model\Order\Shipment $shipment */
             $shipment = $convertOrder->toShipment($order);
 
+            foreach ($order->getAllItems() as $item) {
+                // Check if order item has qty to ship or is virtual
+                if (! $item->getQtyToShip() || $item->getIsVirtual()) {
+                    continue;
+                }
+
+                $qtyShipped = $item->getQtyToShip();
+
+                // Create shipment item with qty
+                $shipmentItem = $convertOrder->itemToShipmentItem($item)->setQty($qtyShipped);
+
+                // Add shipment item to shipment
+                $shipment->addItem($shipmentItem);
+            }
+
             $shipment->register();
-            $shipment->addComment(__("Tracking URL: " . str_replace('\\', '', $data['tracking_url'])));
+            $shipment->addComment(__("Tracking URL: ") . str_replace('\\', '', $orderData['order']['tracking_url']));
             $track = $this->trackFactory->create();
             $track->addData(array(
                 'carrier_code' => 'custom',
                 'title'        => 'Logitrail',
-                'number'       => $data['tracking_code']
+                'number'       => $orderData['order']['tracking_code']
             ));
             $shipment->addTrack($track);
             $shipment->getOrder()->setState(\Magento\Sales\Model\Order::STATE_COMPLETE);

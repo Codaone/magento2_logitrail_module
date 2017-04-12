@@ -73,7 +73,6 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
 
         $items = $this->quote->getAllItems();
         $api = $this->logitrail->getApi();
-        //$api->setOrderId($this->quote->getId());
         $api->setOrderId($this->quote->getId());
 
         /** @var \Magento\Quote\Model\Quote\Item $item */
@@ -117,9 +116,14 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
             join(' ', $address->getStreet()),
             $address->getPostcode(),
             $address->getCity(),
-            $address->getCompany()
+            $address->getCompany(),
+            $address->getCountryId()
         );
-        $form = $api->getForm($lang);
+
+        $totalSum = $this->quote->getBaseGrandTotal();
+        $shippingCost = $this->quote->getShippingAddress()->getBaseGrandTotal();
+
+        $form = $api->getForm($lang, array('total_sum' => $totalSum - $shippingCost));
         if ($this->isTestMode()) {
             $this->logger->info("Order form for Logitrail: $form");
         }
@@ -131,15 +135,21 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
      *
      * @return string
      */
-    public function shippingDetails($logitrailId, $price)
+    public function shippingDetails($logitrailId, $type, $price)
     {
         $this->session->setLogitrailShippingCost($price);
+        $this->session->setLogitrailShippingType($type);
+
         if ($this->isTestMode()) {
             $this->logger->info("Shipping details: Logitrail Order Id: $logitrailId, Shipping fee: $price");
         }
         $address = $this->quote->getShippingAddress();
         $address->setShippingAmount($price);
         $address->setBaseShippingAmount($price);
+        $translatedType = __($type);
+
+        $address->setShippingDescription("{$this->getConfigData('name')} - {$translatedType}");
+
         $address->save();
         // Find if our shipping has been included.
         $rates = $address->collectShippingRates()
@@ -206,11 +216,18 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
         $method = $this->rateMethodFactory->create();
 
         $method->setData('carrier', $this->_code);
-        $method->setData('carrier_title', "Logitrail");
-        $method->setData('method_title', "Logitrail");
-        $method->setData('method', 'logitrail'); //FIXME: method variable?
+        $method->setData('method', $this->_code);
+
+        $method->setData('carrier_title', $this->getConfigData('name'));
+        $method->setData('method_title', $this->getConfigData('title'));
+        $type = $this->session->getLogitrailShippingType();
+        $this->session->setLogitrailShippingType(null);
+        if (isset($type) && $type) {
+            $method->setData('method_title', __($type));
+        }
 
         $amount = $this->session->getLogitrailShippingCost();
+
         $method->setPrice($amount);
         $method->setData('cost', $amount);
 

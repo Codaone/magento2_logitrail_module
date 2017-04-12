@@ -19,6 +19,7 @@ class ApiClient
     private $email;
     private $phone;
     private $companyName;
+    private $countryCode;
     private $products = array();
 
     private $responseAsRaw = false;
@@ -131,8 +132,10 @@ class ApiClient
      * @param string $address
      * @param string $postalCode
      * @param string $city
+     * @param string $companyName
+     * @param string $countryCode ISO 3166 standard see https://en.wikipedia.org/wiki/ISO_3166
      */
-    public function setCustomerInfo($firstname, $lastname, $phone, $email, $address, $postalCode, $city, $companyName)
+    public function setCustomerInfo($firstname, $lastname, $phone, $email, $address, $postalCode, $city, $companyName, $countryCode)
     {
         $this->firstName = $firstname;
         $this->lastName = $lastname;
@@ -142,6 +145,7 @@ class ApiClient
         $this->phone = $phone;
         $this->email = $email;
         $this->companyName = $companyName;
+        $this->countryCode = $countryCode;
     }
 
     /**
@@ -150,7 +154,7 @@ class ApiClient
      *
      * @return string
      */
-    public function getForm($lang = 'fi')
+    public function getForm($lang = 'fi', $fields = array())
     {
         // TODO: Check that all mandatory values are set
         $post = array();
@@ -163,9 +167,15 @@ class ApiClient
         $post['customer_addr'] = $this->address;
         $post['customer_pc'] = $this->postalCode;
         $post['customer_city'] = $this->city;
+        $post['customer_country'] = $this->countryCode;
         $post['customer_email'] = $this->email;
         $post['customer_phone'] = $this->phone;
         $post['language'] = $lang;
+
+        foreach ($fields as $field => $value) {
+            $post[$field] = $value;
+        }
+
         // add products to post data
         foreach ($this->products as $id => $product) {
             $post['products_'.$id.'_id'] = $product['id'];
@@ -212,7 +222,8 @@ class ApiClient
                 'address' => $this->address,
                 'city' => $this->city,
                 'postalCode' => $this->postalCode,
-                'organizationName' => $this->companyName
+                'organizationName' => $this->companyName,
+                'countryCode' => $this->countryCode
             )
         );
 
@@ -293,6 +304,8 @@ class ApiClient
         $this->city = null;
         $this->phone = null;
         $this->email = null;
+        $this->companyName = null;
+        $this->countryCode = null;
     }
 
     /**

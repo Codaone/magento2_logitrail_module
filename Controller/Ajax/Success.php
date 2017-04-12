@@ -24,6 +24,7 @@ class Success extends \Magento\Framework\App\Action\Action
     {
         $this->logitrail->shippingDetails(
             preg_replace('/[^A-Za-z0-9\-]/', '', $this->getRequest()->getParam('order_id')),
+            $this->getRequest()->getParam('delivery_type'),
             (float)$this->getRequest()->getParam('delivery_fee')
         );
     }
