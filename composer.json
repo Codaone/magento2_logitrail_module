@@ -10,7 +10,7 @@
         "magento/framework": "~100.0"
     },
     "type": "magento2-module",
-    "version": "v1.1.0",
+    "version": "v1.1.1",
     "homepage": "https://github.com/Codaone/magento2_logitrail_module",
     "license": "MIT",
     "autoload": {
