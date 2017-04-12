@@ -156,7 +156,7 @@ class Update extends \Magento\Framework\App\Action\Action
             }
 
             $shipment->register();
-            $shipment->addComment(__("Tracking URL: " . str_replace('\\', '', $orderData['order']['tracking_url'])));
+            $shipment->addComment(__("Tracking URL: ") . str_replace('\\', '', $orderData['order']['tracking_url']));
             $track = $this->trackFactory->create();
             $track->addData(array(
                 'carrier_code' => 'custom',

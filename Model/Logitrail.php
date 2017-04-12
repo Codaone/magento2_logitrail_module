@@ -137,7 +137,7 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
                     }
 
                     $shipment->register();
-                    $shipment->addComment(__("Tracking URL: " . str_replace('\\', '', $response['tracking_url'])));
+                    $shipment->addComment(__("Tracking URL: ") . str_replace('\\', '', $response['tracking_url']));
                     $track = $this->trackFactory->create();
                     $track->addData(array(
                             'carrier_code' => 'custom',
