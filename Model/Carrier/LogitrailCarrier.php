@@ -119,7 +119,11 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
             $address->getCompany(),
             $address->getCountryId()
         );
-        $form = $api->getForm($lang, array('total_sum' => $this->quote->getBaseGrandTotal()));
+
+        $totalSum = $this->quote->getBaseGrandTotal();
+        $shippingCost = $this->quote->getShippingAddress()->getBaseGrandTotal();
+
+        $form = $api->getForm($lang, array('total_sum' => $totalSum - $shippingCost));
         if ($this->isTestMode()) {
             $this->logger->info("Order form for Logitrail: $form");
         }
