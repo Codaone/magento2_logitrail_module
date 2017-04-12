@@ -217,6 +217,7 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
         $method->setData('carrier_title', $this->getConfigData('name'));
         $method->setData('method_title', $this->getConfigData('title'));
         $type = $this->session->getLogitrailShippingType();
+        $this->session->setLogitrailShippingType(null);
         if (isset($type) && $type) {
             $method->setData('method_title', __($type));
         }

@@ -115,16 +115,26 @@ class Logitrail extends \Magento\Framework\Model\AbstractModel
             $response    = json_decode($rawResponse, true);
             if ($response) {
                 if ($this->_getConfig('autoship') and $order->canShip()) {
-                    $qty = array();
-                    foreach ($order->getAllItems() as $item) {
-                        $qty[$item->getId()] = $item->getQtyOrdered();
-                    }
-
                     /** @var \Magento\Sales\Model\Convert\Order $convertOrder */
                     $convertOrder = $this->convertOrderFactory->create();
 
                     /** @var \Magento\Sales\Model\Order\Shipment $shipment */
                     $shipment = $convertOrder->toShipment($order);
+
+                    foreach ($order->getAllItems() as $item) {
+                        // Check if order item has qty to ship or is virtual
+                        if (! $item->getQtyToShip() || $item->getIsVirtual()) {
+                            continue;
+                        }
+
+                        $qtyShipped = $item->getQtyToShip();
+
+                        // Create shipment item with qty
+                        $shipmentItem = $convertOrder->itemToShipmentItem($item)->setQty($qtyShipped);
+
+                        // Add shipment item to shipment
+                        $shipment->addItem($shipmentItem);
+                    }
 
                     $shipment->register();
                     $shipment->addComment(__("Tracking URL: " . str_replace('\\', '', $response['tracking_url'])));
