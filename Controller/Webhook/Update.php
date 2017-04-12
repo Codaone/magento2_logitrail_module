@@ -117,7 +117,9 @@ class Update extends \Magento\Framework\App\Action\Action
         $product = $this->productRepository->getById($productData["product"]["merchant_id"]);
         $stock = $this->stockRegistry->getStockItem($product->getId());
         $stock->setQty($product["inventory"]["available"]);
-        $stock->setIsInStock((int)($product["inventory"]["available"] > 0));
+        if (!$stock->getBackorders()) {
+            $stock->setIsInStock((int)($product["inventory"]["available"] > 0));
+        }
         $this->stockRegistry->updateStockItemBySku($product->getSku(), $stock);
 
         return true;
