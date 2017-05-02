@@ -121,7 +121,7 @@ class LogitrailCarrier extends \Magento\Shipping\Model\Carrier\AbstractCarrier i
         );
 
         $totalSum = $this->quote->getBaseGrandTotal();
-        $shippingCost = $this->quote->getShippingAddress()->getBaseGrandTotal();
+        $shippingCost = $this->quote->getShippingAddress()->getBaseShippingInclTax();
 
         $form = $api->getForm($lang, array('total_sum' => $totalSum - $shippingCost));
         if ($this->isTestMode()) {
