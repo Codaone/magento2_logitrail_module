@@ -25,6 +25,6 @@
 "Create/Update products to Logitrail","Luo/päivitä tuotteet Logitrailille"
 "Error creating/updating products","Virhe tuotteiden luonnissa/päivityksessä"
 "Failed creating/updating product IDs: ","Tuotteiden luonti/päivitys epäonnistui. Tuotenumerot: "
-"pickup","Nouto"
+"pickup","Toimitus valittuun noutopisteeseen"
 "letter","Kirje"
 "home","Ovelle"
