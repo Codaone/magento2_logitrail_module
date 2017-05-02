@@ -17,9 +17,6 @@ define(
                     'lastname': {
                         'required': true
                     },
-                    'street': {
-                        'required': true
-                    },
                     'postcode': {
                         'required': true
                     },
