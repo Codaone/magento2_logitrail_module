@@ -20,10 +20,10 @@ It is also strongly recommended to do installation first in development environm
 On the console when path is the magento folder
 Inside the magento2 installation folder
 
-1. Run `composer require codaone\magento2-logitrail-module`
-2. Run `php bin\magento module:enable Codaone_LogitrailModule`
-3. Run `php bin\magento setup:upgrade`
-4. Run `php bin\magento setup:di:compile`
+1. Run `composer require codaone/magento2-logitrail-module`
+2. Run `php bin/magento module:enable Codaone_LogitrailModule`
+3. Run `php bin/magento setup:upgrade`
+4. Run `php bin/magento setup:di:compile`
 5. Clean Magento cache
 6. Configure the module
 7. Verify the shipping work
