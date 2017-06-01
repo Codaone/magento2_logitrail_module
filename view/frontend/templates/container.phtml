@@ -16,6 +16,7 @@
             var selectionDone = false;
 
             window.logitrailConfig = {
+                selectionDone: false,
                 containerId: 'logitrailHolder',
                 <?php echo $block->isTestMode()?'host: "http://checkout.test.logitrail.com",':''; ?>
                 bridgeUrl: '<?php echo $block->getUrl('logitrail/ajax/form'); ?>',
@@ -31,6 +32,7 @@
                         }
                     });
                     jQuery("#shipping-method-buttons-container").find(".button").prop("disabled", false);
+                    window.logitrailConfig.selectionDone = true;
                     selectionDone = true;
                 },
                 error: function(error) {
