@@ -27,7 +27,7 @@
                                                     <item name="children" xsi:type="array">
                                                         <item name="shipping-rates-validation" xsi:type="array">
                                                             <item name="children" xsi:type="array">
-                                                                <item name="logitrail-shipping-provider-rates-validation" xsi:type="array">
+                                                                <item name="logitrail-rates-validation" xsi:type="array">
                                                                     <item name="component" xsi:type="string">Codaone_LogitrailModule/js/view/shipping-rates-validation</item>
                                                                 </item>
                                                             </item>
